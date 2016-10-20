@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/btn_SingleUseToken"
+        style="@style/BlueButton"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_margin="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="1"
+        android:text="@string/Singleusetoken_button" />
+
+</LinearLayout>
