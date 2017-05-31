@@ -28,7 +28,6 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,6 +45,7 @@ import com.paysafe.common.impl.IdAdapter;
 import com.paysafe.common.impl.Request;
 import com.paysafe.customervault.CustomerVaultService;
 import com.paysafe.utils.Constants;
+import com.paysafe.utils.Utils;
 
 /**
  * The Class PaysafeApiClient.
@@ -74,9 +74,6 @@ public class PaysafeApiClient {
 
 	// The gson object used to deserialize the api response.
 	private final Gson gsonDeserializer;
-
-	// Log tag
-	private static final String LOG_PAYSAFE_API_CLIENT = "PAYSAFE API CLIENT";
 
     /**
      * Constructor 1
@@ -201,14 +198,14 @@ public class PaysafeApiClient {
         final URL url = new URL(request.buildUrl(apiEndPoint));
 
         // LOG
-        if(Constants.TAG_LOG)
-            Log.i(LOG_PAYSAFE_API_CLIENT, "Beta URL.");
+        if(Constants.DEBUG_LOG_VALUE)
+            Utils.debugLog("PAYSAFE API CLIENT: Beta URL.");
 
         final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
         // LOG
-        if(Constants.TAG_LOG)
-            Log.i(LOG_PAYSAFE_API_CLIENT, "HTTPS Connection established successfully.");
+        if(Constants.DEBUG_LOG_VALUE)
+            Utils.debugLog("PAYSAFE API CLIENT: HTTPS Connection established successfully.");
 
         try {
             connection.setConnectTimeout(TIMEOUT_CONNECTION);
@@ -240,8 +237,8 @@ public class PaysafeApiClient {
           } finally {
             connection.disconnect();
          // LOG
-            if(Constants.TAG_LOG)
-                Log.i(LOG_PAYSAFE_API_CLIENT, "HTTPS Connection Disconnected.");
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("PAYSAFE API CLIENT: HTTPS Connection Disconnected.");
           }
         }  // end of processRequest()
       

@@ -29,6 +29,8 @@ import com.paysafe.customervault.SingleUseToken;
 import com.paysafetestapp.utils.Constants;
 import com.paysafetestapp.utils.Utils;
 
+import java.io.IOException;
+
 public class CardDetails extends Activity {
 
 	// EditText
@@ -58,6 +60,11 @@ public class CardDetails extends Activity {
 	private String mState;
 	private String mZip;
 	private PaysafeApiClient client;
+
+	// Configuration
+	private String merchantApiKeySBOX;
+	private String merchantApiPasswordSBOX;
+	private String merchantAccountNumberSBOX;
 
     /**
      * On Create Activity.
@@ -101,7 +108,7 @@ public class CardDetails extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.btn_back:
-				final Intent intent = new Intent(CardDetails.this,Checkout.class);
+				final Intent intent = new Intent(CardDetails.this,Menu.class);
 				startActivity(intent);
 				finish();
 				break;
@@ -212,10 +219,18 @@ public class CardDetails extends Activity {
 	private SingleUseToken singleUseTokenRequest(){
 		 int year = 0;
 		 int month = 0;
-	   client = new PaysafeApiClient(getResources().getString(R.string.user_sbox),
-                                getResources().getString(R.string.password_sbox),
-                                Environment.TEST,
-                                getResources().getString(R.string.merchantaccountno));
+
+		try {
+			merchantApiKeySBOX = Utils.getProperty("merchant_api_key_sbox", mContext);
+			merchantApiPasswordSBOX = Utils.getProperty("merchant_api_password_sbox", mContext);
+			merchantAccountNumberSBOX = Utils.getProperty("merchant_account_number_sbox", mContext);
+
+		} catch(IOException ioExp) {
+			Utils.showDialogAlert("IOException: "+ ioExp.getMessage(), mContext);
+		}
+
+		client = new PaysafeApiClient(merchantApiKeySBOX, merchantApiPasswordSBOX,
+									Environment.TEST, merchantAccountNumberSBOX);
 
         // Retrieve values from Edit Text to process the single use token object.
 	    getValuesfromEditText();
@@ -299,7 +314,7 @@ public class CardDetails extends Activity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		Intent intentCheckOut = new Intent(CardDetails.this,Checkout.class);
+		Intent intentCheckOut = new Intent(CardDetails.this,Menu.class);
 		startActivity(intentCheckOut);
 		finish();
 	} // end of onBackPressed()
@@ -316,7 +331,7 @@ public class CardDetails extends Activity {
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(CardDetails.this,Checkout.class);
+						Intent intent = new Intent(CardDetails.this,Menu.class);
 						startActivity(intent);
 						finish();
 					}

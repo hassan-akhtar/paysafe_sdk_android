@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Paysafe</string>
+    <string name="app_name">Paysafe Test</string>
 
     <!-- Splash Screen -->
     <string name="splash_text">Copyright(C) 2016 paysafe.All rights reserved.</string>
+
     <!-- CheckOut -->
     <string name="shoe">Shoe</string>
     <string name="detailslabel">Details: </string>
     <string name="details"> Comfortable sports shoe. Tap to checkout.</string>
     <string name="checkout">CheckOut</string>
+
+
     <!-- Pay Now -->
     <string name="back">Back</string>
     <string name="merchant_ref">Merchant Ref:</string>
@@ -17,6 +20,7 @@
     <string name="Pay">Pay Now</string>
     <string name="loading_text">Please Wait...</string>
     <string name="singleusetoken">SingleUseToken:</string>
+
     <!-- Card Details -->
     <string name="enter_your_card_details">Enter Your card details </string>
     <string name="name_on_card">Holder Name:</string>
@@ -33,15 +37,47 @@
     <string name="card_no">Card No:</string>
     <string name="cvv">CVV:</string>
     <string name="confirm">Confirm</string>
+
+    <string name="clear">Clear</string>
+    <string name="use">Use</string>
+
     <!-- menu -->
+    <string name="android_pay">Buy With Android Pay</string>
+    <string name="single_use_token">Single Use Token</string>
     <string name="Singleusetoken_button">SingleUseToken</string>
+
     <!-- Button -->
     <string name="search">Search</string>
     <string name="ok">OK</string>
-    <string name="merchantaccountno">1000032987</string>
+
 
     <!-- credentials single use token -->
     <string name="user_sbox">OT-16156</string>
     <string name="password_sbox">B-qa2-0-552b9bcf-0-302c02144ed8f9b8aea9d65b44b77a16a81ec5f9ab916f8c02142b4e69b3a272b866b1e263b0b0c7a925a8945418</string>
+    <string name="merchantaccountno">1000032987</string>
+
+    <string name="user_test_authorize">devcentre4651</string>
+    <string name="password_test_authorize">B-qa2-0-54b5374e-302d02147911306b5c6db4ad74e083803733163195c75ef902150095b4a21a5ea7f4c19b7b37aed1944490b59e785e</string>
+    <string name="merchantaccountno_authorize">1001105860</string>
+
+    <!-- Public Key -->
+    <string name="android_pay_public_key">BKjn018c4ABCE2sA5Q6kRA/LYKHvCRR+P6340DoVoG2jbcDD1lFXgWOlL+iEKxasd5I+P/FNA1w5dTZG6+yiVho=</string>
+
+    <!-- Android Pay Payment Token -->
+    <string name="android_pay_payment_token_bundle">Android Pay Payment Token Bundle</string>
+    <string name="androidpay_public_key">Android Pay Public Key</string>
+    <string name="encrypted_message">Encrypted Message</string>
+    <string name="ephemeral_public_key">Ephemeral Public Key</string>
+    <string name="tag">Tag</string>
+    <string name="txt_env">Environment:</string>
+    <string name="env_prod">PROD</string>
+    <string name="env_test">TEST</string>
+
+    <!-- Authorize -->
+    <string name="android_pay_payment_token">Payment Token</string>
+    <string name="authorize">Authorize</string>
+
+    <!-- server Url authorize -->
+    <string name="url_authorize">https://api.test.netbanx.com/cardpayments/v1/accounts/%s/auths</string>
 
 </resources>

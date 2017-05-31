@@ -2,11 +2,11 @@ package com.paysafe;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
-import android.util.Log;
 
 import com.paysafe.utils.Constants;
 import com.paysafe.common.PaysafeException;
 import com.paysafe.customervault.SingleUseToken;
+import com.paysafe.utils.Utils;
 
 import junit.framework.Assert;
 
@@ -21,18 +21,26 @@ public class ExceptionTest extends ApplicationTestCase<Application> {
     private static PaysafeApiClient client;
 
     // Credentials
-    private final String apiKey = "OT-16156";
-    private final String apiPassword = "B-qa2-0-552b9bcf-0-302c02144ed8f9b8aea9d65b44b77a16a81ec5f9ab916f8c02142b4e69b3a272b866b1e263b0b0c7a925a8945418";
+    private String merchantApiKey;
+    private String merchantApiPassword;
 
     // Merchant Account Number
-    private final String accountNumber = "1001187820";
-
-    // Log Tag
-    private static final String LOG_EXCEPTION_TEST = "EXCEPTION TEST";
+    private String merchantAccountNumber;
 
     public ExceptionTest() {
         super(Application.class);
+        getConfigurationProperties();
     }
+
+    private void getConfigurationProperties() {
+        try {
+            merchantApiKey = Utils.getProperty("merchant-api-key", this.getContext());
+            merchantApiPassword = Utils.getProperty("merchant-api-password", this.getContext());
+            merchantAccountNumber = Utils.getProperty("merchant-account-number", this.getContext());
+        } catch(IOException ioExp) {
+            Utils.debugLog("EXCEPTION TEST: IOException: "+ ioExp.getMessage());
+        }
+    } // end of getConfigurationProperties()
 
     /**
      * Test Case to Create Single Use Token with Missing or Invalid Merchant Account Number.
@@ -40,7 +48,7 @@ public class ExceptionTest extends ApplicationTestCase<Application> {
      */
     public void testMissingOrInvalidAccount() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -65,15 +73,16 @@ public class ExceptionTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_EXCEPTION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("EXCEPTION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            Assert.assertNotNull("Missing or Invalid Account.", oExp.getMessage());
+            Utils.debugLog("EXCEPTION TEST: Missing or Invalid Account: " + oExp.getMessage());
+                    Assert.assertNotNull("Missing or Invalid Account.", oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_EXCEPTION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("EXCEPTION TEST: " + e.getMessage());
         }
     } // end of testMissingOrInvalidAccount
 
@@ -82,7 +91,7 @@ public class ExceptionTest extends ApplicationTestCase<Application> {
      * @throws Exception
      */
     public void testInvalidAuthenticationCredentials() throws Exception {
-        client = new PaysafeApiClient("username", "password", Environment.TEST, accountNumber);
+        client = new PaysafeApiClient("username", "password", Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -111,16 +120,16 @@ public class ExceptionTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_EXCEPTION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("EXCEPTION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_EXCEPTION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("EXCEPTION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_EXCEPTION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("EXCEPTION TEST: " + e.getMessage());
         }
     } // end of testInvalidAuthenticationCredentials()
 }

@@ -13,11 +13,12 @@ Table of Contents
 -----------------
 1. Installation Guide
 2. Pre-requisites
-3. Setting up Paysafe Library
-4. Content
-5. Folder Structure
-6. Known Issues
-7. Contact Information
+3. Setup configuration
+4. Setting up Paysafe Library
+5. Content
+6. Folder Structure
+7. Known Issues
+8. Contact Information
 
 
 1. Installation Guide
@@ -40,8 +41,14 @@ b. JDK version 1.7.0
 c. Gradle version 1.2.3
 d. Android SDK with API Level 15(version 4.0.3) and above.
 
+3. Setup configuration
+----------------------
+Configure your merchant api key and merchant api password before using paysafe library.
+a. Open file 'app\src\main\assets\config.properties'
+b. Add your configurations in this file.
+c. Save file and proceed to next step.
 
-3. Setting up Paysafe Library
+4. Setting up Paysafe Library
 -----------------------------
 
 Getting Started with Paysafe Library on Android Studio.
@@ -68,7 +75,7 @@ c. Steps to run your library.
 	   app\build\outputs\aar\
 	   
 
-4. Content
+5. Content
 ----------
 
 Main Components:
@@ -95,20 +102,20 @@ d. Other Components:
      the Paysafe server.
 	 
 	 
-5. Folder Structure
+6. Folder Structure
 -------------------
 
 a. 'app'     - SDK classes and Application Test classes
 b. java-doc  - SDK related documentation
 
 
-6. Known Issues
+7. Known Issues
 ---------------
 
 None.
 
 
-7. Contact Information
+8. Contact Information
 ----------------------
 
-http://www.optimalpayments.com/contact-us
+https://developer.paysafe.com/en/resources-and-support/contact-us/

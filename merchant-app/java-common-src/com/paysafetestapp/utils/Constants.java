@@ -8,11 +8,30 @@ package com.paysafetestapp.utils;
  */
 public class Constants {
 
+	// TAG LOG
+	public static final String TAG_LOG = "PAYSAFE LOG";
+	public static final Boolean DEBUG_LOG_VALUE = false;
+
 	// Splash Timeout
 	public static final int SPLASH_TIME_OUT = 2000; // 2 seconds
 
 	// Internet check
 	public static final String PLEASE_TURN_ON_YOUR_INTERNET = "Unable to connect to the Paysafe server. Please check your connectivity.";
+
+	// NFC check
+	public static final String NO_NFC_SUPPORT = "This device does not support NFC. Android Pay is not available.";
+
+	// Common
+	public static final String CONNECTION_REFUSED = "refused";
+	public static final String POST = "POST";
+	public static final String GET = "GET";
+
+	// Authorize
+	public static final String PLEASE_ENTER_AMOUNT = "Please enter amount.";
+	public static final String PLEASE_ENTER_PAYMENT_TOKEN = "Please enter payment token.";
+
+	public static final String AutHORIZATION_SUCCESSFUL = "Authorization is successful.";
+
 	// ErrorCode
 	public static final String ERROR_CODE = "Errorcode:";
 	// ErrorMessage

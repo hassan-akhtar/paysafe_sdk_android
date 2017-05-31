@@ -1,0 +1,395 @@
+package com.paysafetestapp.authorize;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Base64;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.paysafetestapp.Menu;
+import com.paysafetestapp.PaysafeApplication;
+import com.paysafetestapp.R;
+import com.paysafetestapp.androidpay.AndroidPayPaymentTokenActivity;
+import com.paysafetestapp.connection.HttpsServerConnection;
+import com.paysafetestapp.utils.Constants;
+import com.paysafetestapp.utils.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Map;
+
+/**
+ * Created by asawari.vaidya on 02-05-2017.
+ */
+
+public class Authorize extends Activity {
+
+    // Button
+    private Button mAuthorizeButton;
+    private Button mBackButton;
+
+    // EditText
+    private EditText mMerchantReferenceNumberEditText;
+    private EditText mAmountEditText;
+    private EditText mPaymentTokenEditText;
+
+    // Context
+    private Context mContext;
+    private HttpsServerConnection mServer_conn;
+
+    // Error
+    private String mMessage;
+    private String mCode;
+
+    // String
+    private String mMerchantRefNo;
+    private String mAmount;
+    private String mPaymentToken;
+
+    // Configuration
+    private String merchantApiKeyAuthorize;
+    private String merchantApiPasswordAuthorize;
+    private String merchantAccountNumberAuthorize;
+
+    protected static final int PAYMENT_TOKEN = 0;
+
+    /**
+     * Debugger Logs
+     * @param msg Message to Log
+     */
+    private void debugLog(String msg) {
+        if(Constants.DEBUG_LOG_VALUE) {
+            android.util.Log.v(Constants.TAG_LOG, msg);
+        }
+    }
+
+    /**
+     * On Create Activity.
+     * @param savedInstanceState Object of Bundle holding instance state.
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.authorize);
+        init();
+    }
+
+    /**
+     * This method is called when initialize UI
+     */
+    private void init() {
+        mContext = this;
+        mServer_conn = new HttpsServerConnection();
+
+        mAuthorizeButton = (Button) findViewById(R.id.btn_authorize);
+        mBackButton = (Button) findViewById(R.id.btn_back);
+
+        mMerchantReferenceNumberEditText = (EditText) findViewById(R.id.et_merchantref);
+        mAmountEditText = (EditText) findViewById(R.id.et_amount);
+        mPaymentTokenEditText = (EditText) findViewById(R.id.et_payment_token);
+
+        mBackButton.setOnClickListener(mClickListener);
+        mAuthorizeButton.setOnClickListener(mClickListener);
+
+        Intent intentPaymentToken = getIntent();
+        // Utils.twelveDigitRandomAlphanumeric()
+        String mMerchantRefNo = Utils.twelveDigitRandomAlphanumeric();
+        //String mMerchantRefNo = "merchantRefNum-AndroidPay-testing-20170426-02";
+        if (!Utils.isEmpty(mMerchantRefNo)) {
+            mMerchantReferenceNumberEditText.setText(mMerchantRefNo);
+        }
+        mPaymentTokenEditText.setText(intentPaymentToken.getStringExtra("AndroidPayPaymentToken"));
+
+    } // end of init()
+
+    /**
+     * This method is called when button click listener
+     */
+    private final View.OnClickListener mClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_back:
+                    final Intent intent = new Intent(Authorize.this,AndroidPayPaymentTokenActivity.class);
+                    startActivity(intent);
+                    finish();
+                    break;
+                case R.id.btn_authorize:
+                    buttonAuthorizeClick();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }; // end of onClickListener
+
+    /**
+     * This method is used to execute async task
+     */
+    private void buttonAuthorizeClick(){
+        getValuesFromEditText();
+
+        if (Utils.isEmpty(mAmount)) {
+            Utils.showDialogAlert(Constants.PLEASE_ENTER_AMOUNT, mContext);
+            return;
+        }
+        if (Utils.isEmpty(mPaymentToken)) {
+            Utils.showDialogAlert(Constants.PLEASE_ENTER_PAYMENT_TOKEN,
+                    mContext);
+            return;
+        }
+
+        //Check Internet connection
+        if (!isCheckInternet()) {
+            Toast.makeText(getApplicationContext(),	Constants.PLEASE_TURN_ON_YOUR_INTERNET, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String urlString = String.format(
+                getResources().getString(R.string.url_authorize),
+                getResources().getString(R.string.merchantaccountno_authorize));
+
+        new AuthorizeRequestViaAsynctask().execute(urlString);
+
+    } // end of buttonAuthorizeClick()
+
+    /**
+     * This method is used to get values from edit text
+     *
+     * @return void
+     *
+     *
+     */
+    private void getValuesFromEditText() {
+        mMerchantRefNo = mMerchantReferenceNumberEditText.getText().toString();
+        mAmount = mAmountEditText.getText().toString();
+        mPaymentToken = mPaymentTokenEditText.getText().toString();
+    }
+
+    // Asyn task for Authorize and create profile
+
+    public class Wrapper {
+        public String responseString;
+        public String url;
+    }
+
+    public class AuthorizeRequestViaAsynctask extends AsyncTask<String, String, Wrapper> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.startProgressDialog(Authorize.this,
+                    getString(R.string.loading_text));
+        }
+
+        @Override
+        protected Wrapper doInBackground(String... params) {
+            String url = params[0];
+            String responseString;
+            Wrapper wrapper = null;
+            responseString = sendRequestToserver(url);
+            wrapper = new Wrapper();
+            wrapper.responseString = responseString;
+            wrapper.url = url;
+
+            return wrapper;
+        }
+
+        protected void onPostExecute(Wrapper wrapper) {
+            Utils.stopProgressDialog();
+            if (wrapper != null && !Utils.isEmpty(wrapper.responseString)) {
+                if (wrapper.responseString
+                        .contains(Constants.CONNECTION_REFUSED)) {
+                    Utils.showDialogAlert(
+                            Constants.PLEASE_TURN_ON_YOUR_INTERNET, mContext);
+                    return;
+                }
+            }
+            if (wrapper != null
+                    && String.format(
+                    getResources().getString(R.string.url_authorize),
+                    getResources().getString(R.string.merchantaccountno_authorize))
+                    .equalsIgnoreCase(wrapper.url)) {
+                parseAuthorize(mServer_conn, wrapper.responseString);
+            }
+        }
+    }
+
+    /**
+     * This method is called when send request to server
+     *
+     * @return String
+     */
+    private String sendRequestToserver(String url) {
+        HttpsServerConnection httpsServerConnection = new HttpsServerConnection();
+        String responseString = null;
+        getValuesFromEditText();
+        String base64EncodedCredentials = null;
+        try {
+
+            try {
+                merchantApiKeyAuthorize = Utils.getProperty("merchant_api_key_authorize", mContext);
+                merchantApiPasswordAuthorize = Utils.getProperty("merchant_api_password_authorize", mContext);
+                merchantAccountNumberAuthorize = Utils.getProperty("merchant_account_number_authorize", mContext);
+
+            } catch(IOException ioExp) {
+                Utils.showDialogAlert("IOException: "+ ioExp.getMessage(), mContext);
+            }
+
+            if (String.format(getResources().getString(R.string.url_authorize),
+                    merchantAccountNumberAuthorize).equalsIgnoreCase(url)) {
+
+                try {
+                    base64EncodedCredentials = Base64
+                            .encodeToString((merchantApiKeyAuthorize + ":" + merchantApiPasswordAuthorize)
+                                    .getBytes("UTF-8"), Base64.NO_WRAP);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                responseString = httpsServerConnection.requestUrl(
+                        base64EncodedCredentials, url,
+                        createAuthorizeJsonObject(), Constants.POST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return responseString;
+    }
+
+    /**
+     * This method is called when parse the authorize response
+     *
+     * @return void
+     *
+     */
+    private void parseAuthorize(HttpsServerConnection server_conn,
+                                String responseString) {
+
+        // Parse Json Object
+        final ArrayList<String> responseParams = new ArrayList<String>();
+        responseParams.add("id");
+        if (!Utils.isEmpty(responseString) && responseString.contains("error")) {
+            responseParams.add("error");
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> map = server_conn.readAndParseJSON1(
+                    responseString, responseParams);
+            try {
+                final String errorDetails = (String) map.get("error");
+                final ArrayList<String> responseParamsData = new ArrayList<String>();
+                responseParamsData.add("code");
+                responseParamsData.add("message");
+                @SuppressWarnings("unchecked")
+                final Map<String, Object> map1 = server_conn.readAndParseJSON1(
+                        errorDetails, responseParamsData);
+                String strCode = (String) map1.get("code");
+                String strMessage = (String) map1.get("message");
+
+                Utils.showDialogAlert(strCode + ": " + strMessage, mContext);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            String strStatus = checkedAuthorizeStatus(responseParams,server_conn, responseString);
+            if (!Utils.isEmpty(strStatus) && strStatus.equals("COMPLETED")) {
+                showDialogAlert(Constants.AutHORIZATION_SUCCESSFUL,mContext);
+            }
+
+        }
+    }
+
+    /**
+     * This method is used for create authorize JsonObject
+     *
+     * @return JSONObject
+     *
+     *
+     */
+    private JSONObject createAuthorizeJsonObject() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("merchantRefNum", mMerchantRefNo);
+            json.put("amount", mAmount);
+            json.put("settleWithAuth", true);
+            JSONObject card = new JSONObject();
+            card.put("paymentToken", mPaymentToken);
+
+            json.put("description", "Video purchase");
+            json.put("customerIp", "204.91.0.12");
+            json.put("card", card);
+
+            return json;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    private String checkedAuthorizeStatus(ArrayList<String> responseParams,
+                                          HttpsServerConnection server_conn, String responseString) {
+        responseParams.add("status");
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = server_conn.readAndParseJSON(responseString,
+                responseParams);
+        String strStatus = (String) map.get("status");
+        debugLog("responseString : " + responseString);
+        debugLog("response status : " + strStatus);
+        return strStatus;
+    }
+
+    /**
+     * This method is used to show alert dialog
+     *
+     * @return void
+     */
+    private void showDialogAlert(String alertMessage, Context context) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setMessage(alertMessage);
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Authorize.this, Menu.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    /**
+     * This method is called when check the Internet
+     *
+     * @return void
+     *
+     */
+
+    private boolean isCheckInternet() {
+        boolean isNetworkAvailable = Utils
+                .isNetworkAvailable(PaysafeApplication.mApplicationContext);
+        boolean isOnline = Utils
+                .isOnline(PaysafeApplication.mApplicationContext);
+        if (isNetworkAvailable) {
+            return true;
+        } else if (isOnline) {
+            return true;
+        }
+        return false;
+    }
+
+
+} // end of class Authorize

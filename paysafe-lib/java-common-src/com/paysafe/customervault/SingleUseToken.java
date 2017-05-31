@@ -39,6 +39,9 @@ public class SingleUseToken implements BaseDomainObject {
 	/** The card */
 	@Expose
 	private Card card;
+    /** The Android Pay Payment Token */
+    @Expose
+    private AndroidPayPaymentToken androidPayPaymentToken;
 
 	/** The profileId */
 	private String profileId;
@@ -89,6 +92,26 @@ public class SingleUseToken implements BaseDomainObject {
     * */
     public final void setCard(final Card card) {
         this.card = card;
+    }
+
+    /**
+     * Get Android Pay Payment Token
+     *
+     * @return Object of AndroidPayPaymentToken
+     */
+    public final AndroidPayPaymentToken getAndroidPayPaymentToken() {
+        return androidPayPaymentToken;
+    }
+
+    /**
+     * Set Android Pay Payment Token
+     *
+     * @param androidPayPaymentToken AndroidPayPaymentToken Object
+     *
+     */
+    public final void setAndroidPayPaymentToken(final AndroidPayPaymentToken
+                                                        androidPayPaymentToken) {
+        this.androidPayPaymentToken = androidPayPaymentToken;
     }
 
     /**
@@ -188,12 +211,16 @@ public class SingleUseToken implements BaseDomainObject {
 
         private final SingleUseToken singleUseToken = new SingleUseToken();
         private Card.CardBuilder<SingleUseTokenBuilder> cardBuilder;
-
+        private AndroidPayPaymentToken.AndroidPayPaymentTokenBuilder<SingleUseTokenBuilder>
+                androidPayPaymentTokenBuilder;
 
         @Override
         public final SingleUseToken build() {
             if(null != cardBuilder) {
                 singleUseToken.setCard(cardBuilder.build());
+            }
+            if(null != androidPayPaymentTokenBuilder) {
+                singleUseToken.setAndroidPayPaymentToken(androidPayPaymentTokenBuilder.build());
             }
             return singleUseToken;
         } // end of build()
@@ -230,6 +257,22 @@ public class SingleUseToken implements BaseDomainObject {
                 cardBuilder = new Card.CardBuilder<SingleUseTokenBuilder>(this);
             }
             return cardBuilder;
+        }
+
+        /**
+         * Set the property AndroidPayPaymentToken
+         *
+         * @return AndroidPayPaymentToken.AndroidPayPaymentTokenBuilder<SingleUseTokenBuilder>
+         *     object.
+         * */
+        public final AndroidPayPaymentToken.AndroidPayPaymentTokenBuilder<SingleUseTokenBuilder>
+        androidPayPaymentToken() {
+            if(null == androidPayPaymentTokenBuilder) {
+                androidPayPaymentTokenBuilder = new
+                        AndroidPayPaymentToken.AndroidPayPaymentTokenBuilder<SingleUseTokenBuilder>
+                        (this);
+            }
+            return androidPayPaymentTokenBuilder;
         }
 
         /**
