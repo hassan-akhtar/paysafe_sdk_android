@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.paysafetestapp" >
+
     <!-- Internet -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <!-- NFC -->
+    <!--<uses-permission android:name="android.hardware.nfc" />-->
+
+    <!-- SDK Minimum Version-->
+    <uses-sdk android:minSdkVersion="15" />
+
     <application
         android:name="com.paysafetestapp.PaysafeApplication"
         android:allowBackup="false"
@@ -22,11 +30,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.paysafetestapp.Checkout"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
-        <activity
             android:name="com.paysafetestapp.CardDetails"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
@@ -36,6 +39,32 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
+        <activity
+            android:name="com.paysafetestapp.authorize.Authorize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.paysafetestapp.androidpay.AndroidPayPaymentTokenActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.paysafetestapp.androidpay.PublicKeyActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:theme="@style/Theme.AppCompat"
+            android:name="com.paysafetestapp.androidpay.AndroidPayActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+
+        <!-- Enables the Android Pay API -->
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
 
     </application>
 

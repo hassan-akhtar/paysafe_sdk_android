@@ -37,6 +37,7 @@ public class CustomerVaultService {
     // End point values for API's URL
     private static final String URI = "customervault/v1";
     private static final String SINGLE_USE_TOKEN_PATH = "/singleusetokens";
+    private static final String ANDROID_PAY_PAYMENT_TOKEN_PATH = "/androidpaysingleusetokens";
     // Object of Class PaysafeApiClient
     private final PaysafeApiClient client;
 
@@ -70,6 +71,24 @@ public class CustomerVaultService {
 
         return (client.processRequest(request,SingleUseToken.class));
     } // end of createSingleUseToken()
+
+    /**
+     * Create Android Pay Payment Token
+     */
+    public final SingleUseToken createAndroidPayPaymentToken(
+            final SingleUseToken singleUseToken)
+            throws IOException, PaysafeException {
+
+        // Build request for API
+        final Request request = Request.builder()
+                .uri(prepareUri(URI + ANDROID_PAY_PAYMENT_TOKEN_PATH))
+                .method(Request.RequestType.POST)
+                .body(singleUseToken)
+                .build();
+
+        return (client.processRequest(request, SingleUseToken.class));
+    } // end of createAndroidPayPaymentToken()
+
 
     /**
      * Prepare Uri

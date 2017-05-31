@@ -2,12 +2,11 @@ package com.paysafe;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
-import android.util.Log;
 
 import com.paysafe.utils.Constants;
 import com.paysafe.common.PaysafeException;
 import com.paysafe.customervault.SingleUseToken;
-import com.paysafe.PaysafeApiClient;
+import com.paysafe.utils.Utils;
 
 import junit.framework.Assert;
 
@@ -22,18 +21,26 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     private static PaysafeApiClient client;
 
     // Credentials
-    private final String apiKey = "OT-16156";
-    private final String apiPassword = "B-qa2-0-552b9bcf-0-302c02144ed8f9b8aea9d65b44b77a16a81ec5f9ab916f8c02142b4e69b3a272b866b1e263b0b0c7a925a8945418";
+    private String merchantApiKey;
+    private String merchantApiPassword;
 
     // Merchant Account Number
-    private final String accountNumber = "1001187820";
-
-    // Log Tag
-    private static final String LOG_APPLICATION_TEST = "APPLICATION TEST";
+    private String merchantAccountNumber;
 
     public ApplicationTest() {
         super(Application.class);
+        getConfigurationProperties();
     }
+
+    private void getConfigurationProperties() {
+        try {
+            merchantApiKey = Utils.getProperty("merchant-api-key", this.getContext());
+            merchantApiPassword = Utils.getProperty("merchant-api-password", this.getContext());
+            merchantAccountNumber = Utils.getProperty("merchant-account-number", this.getContext());
+        } catch(IOException ioExp) {
+            Utils.debugLog("APPLICATION TEST: IOException: "+ ioExp.getMessage());
+        }
+    } // end of getConfigurationProperties()
 
     /**
      * Test Case to Create Single Use Token With All Fields.
@@ -41,7 +48,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testCreateSingleUseToken() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST, accountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -68,18 +75,53 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
         }
     } // end of testCreateSingleUseToken()
+
+    /**
+     * Test Case to Create Android Pay Payment Token
+     * @throws Exception
+     */
+    public void testAndroidPayPaymentToken() throws Exception {
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
+
+        try {
+            SingleUseToken sObjResponse = client.customerVaultService()
+                    .createAndroidPayPaymentToken(
+                            SingleUseToken.builder()
+                                    .androidPayPaymentToken()
+                                    .encryptedMessage("PHxZxBQvVWwP")
+                                    .ephemeralPublicKey("BPhVspn70Zj2Kkgu9t8+ApEuUWsI/zos5whGCQBlgOkuYagOis7qsrcbQrcprjvTZO3XOU+Qbcc28FSgsRtcgQE=")
+                                    .tag("TNwa3Q2WiyGi/eDA4XYVklq08KZiSxB7xvRiKK3H7kE=")
+                                    .done()
+                                    .build());
+
+            Assert.assertNotNull("Payment Token should have an id", sObjResponse.getId());
+
+        } catch (IOException ioExp) {
+            // Log IO Exception
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
+        } catch (PaysafeException oExp) {
+            // Log Optimal Exception
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
+        } catch (Exception e) {
+            // Log Exception
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
+        }
+    }
 
     /**
      * Test Case to Create Single Use Token With missing Billing Address Zip Code.
@@ -87,7 +129,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingBillingAddressZipCode() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST, accountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -117,16 +159,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
         }
     } // end of testMissingBillingAddressZipCode()
 
@@ -136,7 +178,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingBillingAddressDetails() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST, accountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -159,16 +201,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
         }
     } // end of testMissingBillingAddressDetails()
 
@@ -178,7 +220,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingCardExpiryDetails() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST, accountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -205,16 +247,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
         }
     } // end of testMissingCardExpiryDetails()
 
@@ -224,7 +266,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingCardExpiryMonth() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST, accountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -254,16 +296,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
         }
     } // end of testMissingCardExpiryMonth()
 
@@ -273,7 +315,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingCardExpiryYear() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST, accountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -307,16 +349,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
         }
     } // end of testMissingCardExpiryYear()
 
@@ -326,7 +368,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testCreateSingleUseTokenWithExpiredCard() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST, accountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -357,16 +399,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
         }
     } // end of testCreateSingleUseTokenWithExpiredCard()
 
@@ -376,7 +418,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingCardNumber() throws Exception {
 
-        client = new PaysafeApiClient(apiKey, apiPassword, Environment.TEST, accountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -406,16 +448,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
         } catch (IOException ioExp) {
             // Log IO Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, ioExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
             // Log Paysafe Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, oExp.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
             // Log Exception
-            if(Constants.TAG_LOG)
-                Log.e(LOG_APPLICATION_TEST, e.getMessage());
+            if(Constants.DEBUG_LOG_VALUE)
+                Utils.debugLog("APPLICATION TEST: " + e.getMessage());
         }
     } // end of testMissingCardNumber()
 }
