@@ -40,5 +40,4 @@ dependencies {
     compile 'com.google.android.gms:play-services-wallet:10.2.1'
     compile 'com.google.android.gms:play-services:10.2.1'
     compile project(':app-release')
-    compile files('src/main/res/libs/bcprov-jdk16-1.45.jar')
 }
