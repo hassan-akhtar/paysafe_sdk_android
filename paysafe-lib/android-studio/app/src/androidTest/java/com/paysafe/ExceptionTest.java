@@ -34,8 +34,8 @@ public class ExceptionTest extends ApplicationTestCase<Application> {
 
     private void getConfigurationProperties() {
         try {
-            merchantApiKey = Utils.getProperty("merchant-api-key", this.getContext());
-            merchantApiPassword = Utils.getProperty("merchant-api-password", this.getContext());
+            merchantApiKey = Utils.getProperty("merchant-api-key-id", this.getContext());
+            merchantApiPassword = Utils.getProperty("merchant-api-key-password", this.getContext());
             merchantAccountNumber = Utils.getProperty("merchant-account-number", this.getContext());
         } catch(IOException ioExp) {
             Utils.debugLog("EXCEPTION TEST: IOException: "+ ioExp.getMessage());

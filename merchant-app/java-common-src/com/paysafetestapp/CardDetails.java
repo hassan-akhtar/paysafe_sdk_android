@@ -62,8 +62,8 @@ public class CardDetails extends Activity {
 	private PaysafeApiClient client;
 
 	// Configuration
-	private String merchantApiKeySBOX;
-	private String merchantApiPasswordSBOX;
+	private String merchantApiKeyIdSBOX;
+	private String merchantApiKeyPasswordSBOX;
 	private String merchantAccountNumberSBOX;
 
     /**
@@ -108,7 +108,7 @@ public class CardDetails extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.btn_back:
-				final Intent intent = new Intent(CardDetails.this,Menu.class);
+				final Intent intent = new Intent(CardDetails.this,Checkout.class);
 				startActivity(intent);
 				finish();
 				break;
@@ -126,7 +126,7 @@ public class CardDetails extends Activity {
 	 * This method is used to execute async task
 	 */
 	private void buttonConfirmClick(){
-		getValuesfromEditText();
+		getValuesFromEditText();
 		//Check Internet connection
 		if (!isCheckInternet()) {
 			Toast.makeText(getApplicationContext(),	Constants.PLEASE_TURN_ON_YOUR_INTERNET,Toast.LENGTH_LONG).show();
@@ -221,19 +221,19 @@ public class CardDetails extends Activity {
 		 int month = 0;
 
 		try {
-			merchantApiKeySBOX = Utils.getProperty("merchant_api_key_sbox", mContext);
-			merchantApiPasswordSBOX = Utils.getProperty("merchant_api_password_sbox", mContext);
+			merchantApiKeyIdSBOX = Utils.getProperty("merchant_api_key_id_sbox", mContext);
+			merchantApiKeyPasswordSBOX = Utils.getProperty("merchant_api_key_password_sbox", mContext);
 			merchantAccountNumberSBOX = Utils.getProperty("merchant_account_number_sbox", mContext);
 
 		} catch(IOException ioExp) {
 			Utils.showDialogAlert("IOException: "+ ioExp.getMessage(), mContext);
 		}
 
-		client = new PaysafeApiClient(merchantApiKeySBOX, merchantApiPasswordSBOX,
+		client = new PaysafeApiClient(merchantApiKeyIdSBOX, merchantApiKeyPasswordSBOX,
 									Environment.TEST, merchantAccountNumberSBOX);
 
         // Retrieve values from Edit Text to process the single use token object.
-	    getValuesfromEditText();
+	    getValuesFromEditText();
 
 		try {
 			SingleUseToken sObjResponse;
@@ -278,7 +278,7 @@ public class CardDetails extends Activity {
 	/**
 	 * This method is used to get values from edit text
 	 */
-	private void getValuesfromEditText() {
+	private void getValuesFromEditText() {
 		mCardHolderName = mNameOnCardEditText.getText().toString();
 		mCardNo = mCardNoEditText.getText().toString();
 		mMonth = mMonthEditText.getText().toString();
@@ -289,7 +289,7 @@ public class CardDetails extends Activity {
 		mCountry = mCountryEditText.getText().toString();
 		mState = mStateEditText.getText().toString();
 		mZip = mZipEditText.getText().toString();
-	} // end of getValuesfromEditText()
+	} // end of getValuesFromEditText()
 
 	/**
 	 * This method is called when check the Internet
@@ -314,7 +314,7 @@ public class CardDetails extends Activity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		Intent intentCheckOut = new Intent(CardDetails.this,Menu.class);
+		Intent intentCheckOut = new Intent(CardDetails.this,Checkout.class);
 		startActivity(intentCheckOut);
 		finish();
 	} // end of onBackPressed()
@@ -331,7 +331,7 @@ public class CardDetails extends Activity {
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(CardDetails.this,Menu.class);
+						Intent intent = new Intent(CardDetails.this,Checkout.class);
 						startActivity(intent);
 						finish();
 					}

@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.paysafetestapp.paywithgoogle.PayWithGoogleActivity;
+
 public class Checkout extends Activity {
 
 	/**
@@ -34,8 +36,6 @@ public class Checkout extends Activity {
 	 */
 	private void init() {
 		Button mCheckOutButton = (Button) findViewById(R.id.btn_Checkout);
-		Button mBackButton = (Button) findViewById(R.id.btn_back);
-		mBackButton.setOnClickListener(mClickListener);
 		mCheckOutButton.setOnClickListener(mClickListener);
 	} // end of init()
 
@@ -48,14 +48,8 @@ public class Checkout extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.btn_Checkout:
-				Intent intent = new Intent(Checkout.this,CardDetails.class);
+				Intent intent = new Intent(Checkout.this,PayWithGoogleActivity.class);
 				startActivity(intent);
-				finish();
-				break;
-				
-			case R.id.btn_back:
-				Intent intentBack = new Intent(Checkout.this,Menu.class);
-				startActivity(intentBack);
 				finish();
 				break;
 			default:
@@ -63,4 +57,15 @@ public class Checkout extends Activity {
 			}
 		}
 	}; // end of OnCLickListener
+
+	/**
+	 * This method is called when back pressed finished the activity
+	 */
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		System.exit(0);
+
+	} // end of onBackPressed()
+
 } // end of class Checkout
