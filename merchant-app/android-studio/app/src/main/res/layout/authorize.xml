@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:lines="1"
-            android:text="@string/android_pay_payment_token"
+            android:text="@string/payment_token"
             android:textColor="@android:color/black" />
 
         <EditText

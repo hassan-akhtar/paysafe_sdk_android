@@ -39,9 +39,10 @@ public class SingleUseToken implements BaseDomainObject {
 	/** The card */
 	@Expose
 	private Card card;
-    /** The Android Pay Payment Token */
+
+    /** The Pay With Google */
     @Expose
-    private AndroidPayPaymentToken androidPayPaymentToken;
+    private PayWithGooglePaymentToken payWithGooglePaymentToken;
 
 	/** The profileId */
 	private String profileId;
@@ -95,23 +96,21 @@ public class SingleUseToken implements BaseDomainObject {
     }
 
     /**
-     * Get Android Pay Payment Token
+     * Get Pay With Google
      *
-     * @return Object of AndroidPayPaymentToken
+     * @return Object of PayWithGooglePaymentToken
      */
-    public final AndroidPayPaymentToken getAndroidPayPaymentToken() {
-        return androidPayPaymentToken;
+    public final PayWithGooglePaymentToken getPayWithGooglePaymentToken() {
+        return payWithGooglePaymentToken;
     }
 
     /**
-     * Set Android Pay Payment Token
+     * Set Pay With Google
      *
-     * @param androidPayPaymentToken AndroidPayPaymentToken Object
-     *
+     * @param payWithGooglePaymentToken PayWithGooglePaymentToken Object
      */
-    public final void setAndroidPayPaymentToken(final AndroidPayPaymentToken
-                                                        androidPayPaymentToken) {
-        this.androidPayPaymentToken = androidPayPaymentToken;
+    public final void setPayWithGooglePaymentToken(final PayWithGooglePaymentToken payWithGooglePaymentToken) {
+        this.payWithGooglePaymentToken = payWithGooglePaymentToken;
     }
 
     /**
@@ -211,16 +210,16 @@ public class SingleUseToken implements BaseDomainObject {
 
         private final SingleUseToken singleUseToken = new SingleUseToken();
         private Card.CardBuilder<SingleUseTokenBuilder> cardBuilder;
-        private AndroidPayPaymentToken.AndroidPayPaymentTokenBuilder<SingleUseTokenBuilder>
-                androidPayPaymentTokenBuilder;
+        private PayWithGooglePaymentToken.PayWithGooglePaymentTokenBuilder<SingleUseTokenBuilder>
+                payWithGooglePaymentTokenBuilder;
 
         @Override
         public final SingleUseToken build() {
             if(null != cardBuilder) {
                 singleUseToken.setCard(cardBuilder.build());
             }
-            if(null != androidPayPaymentTokenBuilder) {
-                singleUseToken.setAndroidPayPaymentToken(androidPayPaymentTokenBuilder.build());
+            if(null != payWithGooglePaymentTokenBuilder) {
+                singleUseToken.setPayWithGooglePaymentToken(payWithGooglePaymentTokenBuilder.build());
             }
             return singleUseToken;
         } // end of build()
@@ -260,19 +259,19 @@ public class SingleUseToken implements BaseDomainObject {
         }
 
         /**
-         * Set the property AndroidPayPaymentToken
+         * Set the property PayWithGooglePaymentToken
          *
-         * @return AndroidPayPaymentToken.AndroidPayPaymentTokenBuilder<SingleUseTokenBuilder>
+         * @return PayWithGooglePaymentToken.PayWithGooglePaymentTokenBuilder<SingleUseTokenBuilder>
          *     object.
          * */
-        public final AndroidPayPaymentToken.AndroidPayPaymentTokenBuilder<SingleUseTokenBuilder>
-        androidPayPaymentToken() {
-            if(null == androidPayPaymentTokenBuilder) {
-                androidPayPaymentTokenBuilder = new
-                        AndroidPayPaymentToken.AndroidPayPaymentTokenBuilder<SingleUseTokenBuilder>
+        public final PayWithGooglePaymentToken.PayWithGooglePaymentTokenBuilder<SingleUseTokenBuilder>
+        payWithGooglePaymentToken() {
+            if(null == payWithGooglePaymentTokenBuilder) {
+                payWithGooglePaymentTokenBuilder = new
+                        PayWithGooglePaymentToken.PayWithGooglePaymentTokenBuilder<SingleUseTokenBuilder>
                         (this);
             }
-            return androidPayPaymentTokenBuilder;
+            return payWithGooglePaymentTokenBuilder;
         }
 
         /**

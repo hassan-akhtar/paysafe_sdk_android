@@ -13,10 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.paysafetestapp.Menu;
+import com.paysafetestapp.Checkout;
 import com.paysafetestapp.PaysafeApplication;
 import com.paysafetestapp.R;
-import com.paysafetestapp.androidpay.AndroidPayPaymentTokenActivity;
 import com.paysafetestapp.connection.HttpsServerConnection;
 import com.paysafetestapp.utils.Constants;
 import com.paysafetestapp.utils.Utils;
@@ -56,23 +55,12 @@ public class Authorize extends Activity {
     private String mMerchantRefNo;
     private String mAmount;
     private String mPaymentToken;
+    private String mPaymentMethod;
 
     // Configuration
-    private String merchantApiKeyAuthorize;
-    private String merchantApiPasswordAuthorize;
+    private String merchantApiKeyIdAuthorize;
+    private String merchantApiKeyPasswordAuthorize;
     private String merchantAccountNumberAuthorize;
-
-    protected static final int PAYMENT_TOKEN = 0;
-
-    /**
-     * Debugger Logs
-     * @param msg Message to Log
-     */
-    private void debugLog(String msg) {
-        if(Constants.DEBUG_LOG_VALUE) {
-            android.util.Log.v(Constants.TAG_LOG, msg);
-        }
-    }
 
     /**
      * On Create Activity.
@@ -83,6 +71,9 @@ public class Authorize extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authorize);
         init();
+
+        // Set values for Merchant Account
+        setMerchantAccount(mPaymentMethod);
     }
 
     /**
@@ -103,13 +94,12 @@ public class Authorize extends Activity {
         mAuthorizeButton.setOnClickListener(mClickListener);
 
         Intent intentPaymentToken = getIntent();
-        // Utils.twelveDigitRandomAlphanumeric()
         String mMerchantRefNo = Utils.twelveDigitRandomAlphanumeric();
-        //String mMerchantRefNo = "merchantRefNum-AndroidPay-testing-20170426-02";
         if (!Utils.isEmpty(mMerchantRefNo)) {
             mMerchantReferenceNumberEditText.setText(mMerchantRefNo);
         }
-        mPaymentTokenEditText.setText(intentPaymentToken.getStringExtra("AndroidPayPaymentToken"));
+        mPaymentTokenEditText.setText(intentPaymentToken.getStringExtra("PwgPaymentToken"));
+        mPaymentMethod = intentPaymentToken.getStringExtra("PwgPaymentMethod");
 
     } // end of init()
 
@@ -122,7 +112,7 @@ public class Authorize extends Activity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_back:
-                    final Intent intent = new Intent(Authorize.this,AndroidPayPaymentTokenActivity.class);
+                    final Intent intent = new Intent(Authorize.this,Checkout.class);
                     startActivity(intent);
                     finish();
                     break;
@@ -160,9 +150,9 @@ public class Authorize extends Activity {
 
         String urlString = String.format(
                 getResources().getString(R.string.url_authorize),
-                getResources().getString(R.string.merchantaccountno_authorize));
+                merchantAccountNumberAuthorize);
 
-        new AuthorizeRequestViaAsynctask().execute(urlString);
+        new AuthorizeRequestViaAsyncTask().execute(urlString);
 
     } // end of buttonAuthorizeClick()
 
@@ -177,16 +167,42 @@ public class Authorize extends Activity {
         mMerchantRefNo = mMerchantReferenceNumberEditText.getText().toString();
         mAmount = mAmountEditText.getText().toString();
         mPaymentToken = mPaymentTokenEditText.getText().toString();
-    }
+    } // end of getValuesFromEditTest()
 
-    // Asyn task for Authorize and create profile
+    /**
+     * Set Merchant Account from Payment Method
+     */
+    private void setMerchantAccount(String mPaymentMethod) {
+
+        try {
+            merchantApiKeyIdAuthorize = Utils.getProperty("merchant_api_key_id_auth", mContext);
+            merchantApiKeyPasswordAuthorize = Utils.getProperty("merchant_api_key_password_auth", mContext);
+
+            switch (mPaymentMethod) {
+                case "TOKENIZED_CARD":
+                    merchantAccountNumberAuthorize = Utils.getProperty(
+                            "merchant_account_number_tokenized_card", mContext);
+                    break;
+
+                case "CARD_ON_FILE":
+                    merchantAccountNumberAuthorize = Utils.getProperty(
+                            "merchant_account_number_card_on_file", mContext);
+                    break;
+            }
+        } catch(IOException ioExp) {
+            Utils.showDialogAlert("IOException: "+ ioExp.getMessage(), mContext);
+        }
+
+    } // end of setMerchantAccount()
+
+    // Async task for Authorize and create profile
 
     public class Wrapper {
         public String responseString;
         public String url;
     }
 
-    public class AuthorizeRequestViaAsynctask extends AsyncTask<String, String, Wrapper> {
+    public class AuthorizeRequestViaAsyncTask extends AsyncTask<String, String, Wrapper> {
 
         @Override
         protected void onPreExecute() {
@@ -221,7 +237,7 @@ public class Authorize extends Activity {
             if (wrapper != null
                     && String.format(
                     getResources().getString(R.string.url_authorize),
-                    getResources().getString(R.string.merchantaccountno_authorize))
+                    merchantAccountNumberAuthorize)
                     .equalsIgnoreCase(wrapper.url)) {
                 parseAuthorize(mServer_conn, wrapper.responseString);
             }
@@ -239,22 +255,12 @@ public class Authorize extends Activity {
         getValuesFromEditText();
         String base64EncodedCredentials = null;
         try {
-
-            try {
-                merchantApiKeyAuthorize = Utils.getProperty("merchant_api_key_authorize", mContext);
-                merchantApiPasswordAuthorize = Utils.getProperty("merchant_api_password_authorize", mContext);
-                merchantAccountNumberAuthorize = Utils.getProperty("merchant_account_number_authorize", mContext);
-
-            } catch(IOException ioExp) {
-                Utils.showDialogAlert("IOException: "+ ioExp.getMessage(), mContext);
-            }
-
             if (String.format(getResources().getString(R.string.url_authorize),
                     merchantAccountNumberAuthorize).equalsIgnoreCase(url)) {
 
                 try {
                     base64EncodedCredentials = Base64
-                            .encodeToString((merchantApiKeyAuthorize + ":" + merchantApiPasswordAuthorize)
+                            .encodeToString((merchantApiKeyIdAuthorize + ":" + merchantApiKeyPasswordAuthorize)
                                     .getBytes("UTF-8"), Base64.NO_WRAP);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -307,7 +313,7 @@ public class Authorize extends Activity {
         } else {
             String strStatus = checkedAuthorizeStatus(responseParams,server_conn, responseString);
             if (!Utils.isEmpty(strStatus) && strStatus.equals("COMPLETED")) {
-                showDialogAlert(Constants.AutHORIZATION_SUCCESSFUL,mContext);
+                showDialogAlert(Constants.AUTHORIZATION_SUCCESSFUL,mContext);
             }
 
         }
@@ -347,8 +353,7 @@ public class Authorize extends Activity {
         Map<String, Object> map = server_conn.readAndParseJSON(responseString,
                 responseParams);
         String strStatus = (String) map.get("status");
-        debugLog("responseString : " + responseString);
-        debugLog("response status : " + strStatus);
+
         return strStatus;
     }
 
@@ -363,7 +368,7 @@ public class Authorize extends Activity {
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Authorize.this, Menu.class);
+                        Intent intent = new Intent(Authorize.this, Checkout.class);
                         startActivity(intent);
                         finish();
                     }

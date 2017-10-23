@@ -33,7 +33,7 @@ public class SplashScreen  extends Activity {
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Intent intent = new Intent(SplashScreen.this, Menu.class);
+				Intent intent = new Intent(SplashScreen.this, Checkout.class);
 				startActivity(intent);
 				finish();
 

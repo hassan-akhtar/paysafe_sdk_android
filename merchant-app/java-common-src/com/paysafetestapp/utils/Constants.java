@@ -18,9 +18,6 @@ public class Constants {
 	// Internet check
 	public static final String PLEASE_TURN_ON_YOUR_INTERNET = "Unable to connect to the Paysafe server. Please check your connectivity.";
 
-	// NFC check
-	public static final String NO_NFC_SUPPORT = "This device does not support NFC. Android Pay is not available.";
-
 	// Common
 	public static final String CONNECTION_REFUSED = "refused";
 	public static final String POST = "POST";
@@ -30,10 +27,10 @@ public class Constants {
 	public static final String PLEASE_ENTER_AMOUNT = "Please enter amount.";
 	public static final String PLEASE_ENTER_PAYMENT_TOKEN = "Please enter payment token.";
 
-	public static final String AutHORIZATION_SUCCESSFUL = "Authorization is successful.";
+	public static final String AUTHORIZATION_SUCCESSFUL = "Authorization is successful.";
 
 	// ErrorCode
-	public static final String ERROR_CODE = "Errorcode:";
+	public static final String ERROR_CODE = "ErrorCode:";
 	// ErrorMessage
 	public static final String ERROR_MESSAGE = "ErrorMessage:";
 } // end of class Constants
