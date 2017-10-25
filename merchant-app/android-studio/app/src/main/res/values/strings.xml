@@ -67,7 +67,6 @@
     <string name="authorize">Authorize</string>
 
     <!-- server Url authorize -->
-    <!--<string name="url_authorize">https://api.test.netbanx.com/cardpayments/v1/accounts/%s/auths</string>-->
-    <string name="url_authorize">https://api.test.paysafe.com/merchantcardtestapp/v1/accounts/%s/authorizations</string>
+    <string name="url_authorize">https://api.test.paysafe.com/cardpayments/v1/accounts/%s/auths</string>
 
 </resources>
