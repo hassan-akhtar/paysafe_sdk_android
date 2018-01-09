@@ -30,10 +30,10 @@
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="0.3"
-            android:text="@string/pwg_payload" />
+            android:text="@string/googlepay_payload" />
 
         <EditText
-            android:id="@+id/pwg_payload"
+            android:id="@+id/googlepay_payload"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
