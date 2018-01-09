@@ -46,11 +46,11 @@
         </activity>
         <activity
             android:theme="@style/Theme.AppCompat"
-            android:name="com.paysafetestapp.paywithgoogle.PayWithGoogleActivity"
+            android:name="com.paysafetestapp.googlepay.GooglePayActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        <activity android:name=".paywithgoogle.PwgPayloadActivity"
+        <activity android:name=".googlepay.GooglePayPayloadActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>

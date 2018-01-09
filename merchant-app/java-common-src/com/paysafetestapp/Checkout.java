@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.paysafetestapp.paywithgoogle.PayWithGoogleActivity;
+import com.paysafetestapp.googlepay.GooglePayActivity;
 
 public class Checkout extends Activity {
 
@@ -48,7 +48,7 @@ public class Checkout extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.btn_Checkout:
-				Intent intent = new Intent(Checkout.this,PayWithGoogleActivity.class);
+				Intent intent = new Intent(Checkout.this,GooglePayActivity.class);
 				startActivity(intent);
 				finish();
 				break;

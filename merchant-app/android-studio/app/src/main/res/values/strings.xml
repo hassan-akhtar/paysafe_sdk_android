@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Paysafe</string>
+    <string name="app_name">Paysafe Test</string>
 
     <!-- Splash Screen -->
     <string name="splash_text">Copyright(C) 2016 paysafe.All rights reserved.</string>
@@ -41,7 +41,7 @@
     <string name="use">Use</string>
 
     <!-- menu -->
-    <string name="pay_with_google">Pay With Google</string>
+    <string name="google_pay">Google Pay</string>
     <string name="single_use_token">Single Use Token</string>
 
     <!-- Button -->
@@ -67,6 +67,4 @@
     <string name="authorize">Authorize</string>
 
     <!-- server Url authorize -->
-    <string name="url_authorize">https://api.test.paysafe.com/cardpayments/v1/accounts/%s/auths</string>
 
-</resources>

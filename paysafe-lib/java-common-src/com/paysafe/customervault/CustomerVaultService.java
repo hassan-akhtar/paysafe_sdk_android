@@ -74,9 +74,9 @@ public class CustomerVaultService {
     } // end of createSingleUseToken()
 
     /**
-     * Create Pay With Google
+     * Create Google Pay Token
      */
-    public final SingleUseToken createPayWithGooglePaymentToken(
+    public final SingleUseToken createGooglePayToken(
             final SingleUseToken singleUseToken)
             throws IOException, PaysafeException {
 
@@ -88,7 +88,7 @@ public class CustomerVaultService {
                 .build();
 
         return (client.processRequest(request, SingleUseToken.class));
-    } // end of createPayWithGooglePaymentToken()
+    } // end of createGooglePayToken()
 
     /**
      * Prepare Uri

@@ -21,8 +21,8 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     private static PaysafeApiClient client;
 
     // Credentials
-    private String merchantApiKeyId;
-    private String merchantApiKeyPassword;
+    private String merchantApiKey;
+    private String merchantApiPassword;
 
     // Merchant Account Number
     private String merchantAccountNumber;
@@ -34,8 +34,8 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     private void getConfigurationProperties() {
         try {
-            merchantApiKeyId = Utils.getProperty("merchant-api-key-id", this.getContext());
-            merchantApiKeyPassword = Utils.getProperty("merchant-api-key-password", this.getContext());
+            merchantApiKey = Utils.getProperty("merchant-api-key", this.getContext());
+            merchantApiPassword = Utils.getProperty("merchant-api-password", this.getContext());
             merchantAccountNumber = Utils.getProperty("merchant-account-number", this.getContext());
         } catch(IOException ioExp) {
             Utils.debugLog("APPLICATION TEST: IOException: "+ ioExp.getMessage());
@@ -48,7 +48,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testCreateSingleUseToken() throws Exception {
 
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -89,17 +89,17 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     } // end of testCreateSingleUseToken()
 
     /**
-     * Test Case to Create Pay With Google Payment Token
+     * Test Case to Create Google Pay Token
      * @throws Exception
      */
-    public void testAndroidPayPaymentToken() throws Exception {
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+    public void testGooglePayToken() throws Exception {
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService()
-                    .createPayWithGooglePaymentToken(
+                    .createGooglePayToken(
                             SingleUseToken.builder()
-                                    .payWithGooglePaymentToken()
+                                    .googlePayToken()
                                     .signature("MEYCIQDohrbxD0EQv2Aqt/PSFEMxwy/Vy6LeqPG4OLgfaG3oPAIhAKBEGFoen8QXt3T4Aw/Q5NyZT/krChUL5Jz764ADucYr")
                                     .protocolVersion("ECv1")
                                     .signedMessage("{\\\"encryptedMessage\\\":\\\"aP0ldj2CMXmhWzbty0KDNdavfjArRmzLsFx8D4Jx//kYazevFAfWLl/2F/mqHCqeKoDzjNDNxZplDXJUwKz1WZZ53g/PApxoywAK+0D4z3rQn9vrM8ic9macXXkJJTHT+tXomNp+Cw2GpIIzdtpoh+mGLMSEZBUTr9R4e9am+ur2UrQDxyy+oFusQ2oSK1cD2BHsi++ZUf8q8/6Dvwkk15M8HTA1LA4A1P9Vmpb0lJfatOw2LuGeYBCpXfASaj9odnXJgbQjKlGkhRJzO1HjfboE1TcHoaXJMpOwcjdpeAq+Sav6jdrQ2hI/bLA6cNt+JFJMc0DNKhBjh1DZvV7DXO8yHXLlDzeM7abnNDTPKTh0pCL+xv7Q8mh/zFy5tOuYiH0CRWxWwvXt0stlYKkyyVw7SMH0uc+5Uds2xyTOpACDBE00RE72gyqRZ8KwAUo903IT\\\",\\\"ephemeralPublicKey\\\":\\\"BMfJBn0QJfYSp8tVadhQCEDrg+/dOJgQlU4nJyd905cIlDx/701f8P1Ji+7vN0zMbEX9TDGAMRLwq4jZ1KEaWrs\\\\u003d\\\",\\\"tag\\\":\\\"lI9EwpX1SYByuhgo6BNOSYcRbxELFFVzQDMKHNvvFIw\\\\u003d\\\"}")
@@ -113,7 +113,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
             if(Constants.DEBUG_LOG_VALUE)
                 Utils.debugLog("APPLICATION TEST: " + ioExp.getMessage());
         } catch (PaysafeException oExp) {
-            // Log Optimal Exception
+            // Log Paysafe Exception
             if(Constants.DEBUG_LOG_VALUE)
                 Utils.debugLog("APPLICATION TEST: " + oExp.getMessage());
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingBillingAddressZipCode() throws Exception {
 
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -178,7 +178,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingBillingAddressDetails() throws Exception {
 
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -220,7 +220,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingCardExpiryDetails() throws Exception {
 
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -266,7 +266,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingCardExpiryMonth() throws Exception {
 
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -315,7 +315,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingCardExpiryYear() throws Exception {
 
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -368,7 +368,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testCreateSingleUseTokenWithExpiredCard() throws Exception {
 
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
@@ -418,7 +418,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
      */
     public void testMissingCardNumber() throws Exception {
 
-        client = new PaysafeApiClient(merchantApiKeyId, merchantApiKeyPassword, Environment.TEST, merchantAccountNumber);
+        client = new PaysafeApiClient(merchantApiKey, merchantApiPassword, Environment.TEST, merchantAccountNumber);
 
         try {
             SingleUseToken sObjResponse = client.customerVaultService().createSingleUseToken(
