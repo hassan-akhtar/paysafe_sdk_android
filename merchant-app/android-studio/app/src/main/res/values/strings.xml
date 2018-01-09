@@ -54,7 +54,7 @@
     <!-- Google Pay Payload-->
     <string name="googlepay_payload">Google Pay Payload</string>
 
-    <!-- Pay With Google Payment Token -->
+    <!-- Google Pay Token -->
     <string name="signature">Signature</string>
     <string name="protocol_version">Protocol Version</string>
     <string name="signed_message">Signed Message</string>
@@ -67,6 +67,6 @@
     <string name="authorize">Authorize</string>
 
     <!-- server Url authorize -->
-	<string name="url_authorize">https://api.test.paysafe.com/cardpayments/v1/accounts/%s/auths</string>
+    <string name="url_authorize">https://api.test.paysafe.com/cardpayments/v1/accounts/%s/auths</string>
 	
 </resources>
