@@ -51,8 +51,8 @@
     <!-- Gateway -->
     <string name="gateway">paysafe</string>
 
-   <!-- Pay With Google Payload-->
-    <string name="pwg_payload">Pay With Google Payload</string>
+    <!-- Google Pay Payload-->
+    <string name="googlepay_payload">Google Pay Payload</string>
 
     <!-- Pay With Google Payment Token -->
     <string name="signature">Signature</string>
