@@ -100,7 +100,7 @@ public class GooglePayPayloadActivity extends Activity {
         mBackButton.setOnClickListener(mClickListener);
         mOKButton.setOnClickListener(mClickListener);
         // Edit Text
-        mGooglePayPayloadEditText = (EditText) findViewById(R.id.pwg_payload);
+        mGooglePayPayloadEditText = (EditText) findViewById(R.id.googlepay_payload);
         mSignatureEditText = (EditText) findViewById(R.id.et_signature);
         mProtocolVersionEditText = (EditText) findViewById(R.id.et_protocol_version);
         mSignedMessageEditText = (EditText) findViewById(R.id.et_signed_message);
@@ -183,7 +183,7 @@ public class GooglePayPayloadActivity extends Activity {
                 if(mMessage != null || mCode != null){
                     Utils.showDialogAlert(Constants.ERROR_CODE+mCode+"\n"+Constants.ERROR_MESSAGE+mMessage, mContext);
                 }else if(singleUseTokenObject != null){
-                    // pay with google payment token
+                    // google pay payment token
                     googlePayToken = singleUseTokenObject.getGooglePayToken();
                     mPaymentToken = singleUseTokenObject.getPaymentToken();
                     mPaymentMethod = singleUseTokenObject.getGooglePayToken()
