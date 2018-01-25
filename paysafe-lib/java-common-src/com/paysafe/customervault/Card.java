@@ -60,6 +60,7 @@ public class Card implements BaseDomainObject {
 	private String cardBin;
 
 	/** The cvv */
+    @Expose
 	private String cvv;
 
 	/** The track1 */
@@ -525,6 +526,18 @@ public class Card implements BaseDomainObject {
          */
         public final CardBuilder<BLDRT> cardNum(final String cardNum) {
             card.setCardNum(cardNum);
+            return this;
+        }
+
+
+        /**
+         * Set the cvv property.
+         *
+         * @param cvv.
+         * @return CardBuilder object.
+         */
+        public final CardBuilder<BLDRT> cvv(final String cvv) {
+            card.setCvv(cvv);
             return this;
         }
 
